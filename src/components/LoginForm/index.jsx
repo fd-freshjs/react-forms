@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { object, string, ref, boolean } from 'yup';
+import Input from '../Input';
 import './LoginForm.css';
 
 const emailScheme = string().required().email();
@@ -24,6 +25,15 @@ class LoginForm extends Component {
     };
   }
 
+  setError(error) {
+    this.setState((state) => {
+      return {
+        ...state,
+        errors: { [error.path]: true },
+      }
+    })
+  }
+
   onSubmit = async (e) => {
     e.preventDefault();
 
@@ -31,15 +41,7 @@ class LoginForm extends Component {
     try {
       await loginSchema.validate(this.state);
     } catch (error) {
-      console.log(error.message);
-
-      this.setState((state) => {
-        return {
-          ...state,
-          errors: { [error.path]: true },
-        }
-      })
-
+      this.setError(error);
       return;
     }
 
@@ -54,9 +56,19 @@ class LoginForm extends Component {
     });
   };
 
+  // var 1
   onChange = (event) => {
     const value = event.target.value;
     const key = event.target.name;
+
+    // validate
+    try {
+      const result = loginSchema.validateSync(this.state);
+      console.log(result);
+    } catch (error) {
+      this.setError(error);
+      return;
+    }
 
     this.setState((state) => {
       const newState = { ...state };
@@ -71,44 +83,60 @@ class LoginForm extends Component {
     });
   };
 
+  // var 2
+  getValue = (inputState) => {
+    this.setState((state) => {
+      return {
+        ...state,
+        ...inputState,
+      }
+    });
+  };
+
   render() {
     return (
       <form onSubmit={this.onSubmit}>
-        <input
+        <Input
           type="text"
           placeholder="Email"
           name="email"
-          onChange={this.onChange}
+          onChange={this.onChange} // var1
+          // getValue={this.getValue} // var2
           value={this.state.email}
-          className={"input " + (this.state.errors.email ? "error" : "")}
+          className={"input input2" + (this.state.errors.email ? " error" : "")}
+
         />
 
-        <input
+        <Input
           type="password"
           placeholder="Password"
           name="password"
-          onChange={this.onChange}
+          onChange={this.onChange} // var1
+          // getValue={this.getValue} // var2
           value={this.state.password}
           className={"input " + (this.state.errors.password ? "error" : "")}
         />
-        <input
+        <Input
           type="password"
           placeholder="Confirm password"
           name="confirmPassword"
-          onChange={this.onChange}
+          onChange={this.onChange} // var1
+          // getValue={this.getValue} // var2
           value={this.state.confirmPassword}
           className={"input " + (this.state.errors.confirmPassword ? "error" : "")}
         />
 
-        <input
+        <Input
           className={(this.state.errors.role ? "errorRadio" : "")}
           type="radio" name="role" value="admin"
-          onChange={this.onChange}
+          onChange={this.onChange} // var1
+          // getValue={this.getValue} // var2
         />
-        <input
+        <Input
           className={(this.state.errors.role ? "errorRadio" : "")}
           type="radio" name="role" value="user"
-          onChange={this.onChange}
+          onChange={this.onChange} // var1
+          // getValue={this.getValue} // var2
         />
 
         <button type="submit">Войти</button>
