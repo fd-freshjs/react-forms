@@ -1,7 +1,7 @@
 import React from 'react';
 import LoginForm from '../../components/LoginForm';
 
-function LoginPage() {
+export function LoginPage() {
   return (
     <div>
         <header>
@@ -16,4 +16,4 @@ function LoginPage() {
   )
 }
 
-export default LoginPage;
+// export default LoginPage;
