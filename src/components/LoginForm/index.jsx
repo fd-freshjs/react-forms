@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
-import { object, string, boolean } from 'yup';
+import { object, string, ref, boolean } from 'yup';
 import './LoginForm.css';
 
+const emailScheme = string().required().email();
+
 const loginSchema = object({ 
-  email: string().required().email(),
+  email: emailScheme,
   password: string().required(),
+  confirmPassword: string().required().oneOf([ref('password')]),
+  role: string().oneOf(['admin', 'user']).required(),
 });
 
 class LoginForm extends Component {
@@ -14,6 +18,8 @@ class LoginForm extends Component {
     this.state = {
       email: '',
       password: '',
+      confirmPassword: '',
+      role: '',
       errors: {},
     };
   }
@@ -25,6 +31,8 @@ class LoginForm extends Component {
     try {
       await loginSchema.validate(this.state);
     } catch (error) {
+      console.log(error.message);
+
       this.setState((state) => {
         return {
           ...state,
@@ -41,6 +49,8 @@ class LoginForm extends Component {
     this.setState({
       email: '',
       password: '',
+      role: '',
+      confirmPassword: '',
     });
   };
 
@@ -80,6 +90,25 @@ class LoginForm extends Component {
           onChange={this.onChange}
           value={this.state.password}
           className={"input " + (this.state.errors.password ? "error" : "")}
+        />
+        <input
+          type="password"
+          placeholder="Confirm password"
+          name="confirmPassword"
+          onChange={this.onChange}
+          value={this.state.confirmPassword}
+          className={"input " + (this.state.errors.confirmPassword ? "error" : "")}
+        />
+
+        <input
+          className={(this.state.errors.role ? "errorRadio" : "")}
+          type="radio" name="role" value="admin"
+          onChange={this.onChange}
+        />
+        <input
+          className={(this.state.errors.role ? "errorRadio" : "")}
+          type="radio" name="role" value="user"
+          onChange={this.onChange}
         />
 
         <button type="submit">Войти</button>

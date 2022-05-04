@@ -1,8 +1,11 @@
 .input {
-    border: none;
     height: 60px;
 }
 
 .error {
     border: 1px solid red;
+}
+
+.errorRadio {
+    background-color: red;
 }
